@@ -17,6 +17,9 @@ public:
 protected:
     void sinkLog(const details::LogMsg& msg) override
     {
+        fmt::memory_buffer formattedMsg;
+        this->formatMessage(msg, formattedMsg);
+        std::cout.write(formattedMsg.data(), formattedMsg.size());
     }
     
     void sinkFlush() override
@@ -39,7 +42,9 @@ public:
 protected:
     void sinkLog(const details::LogMsg& msg) override
     {
-
+        fmt::memory_buffer formattedMsg;
+        this->formatMessage(msg, formattedMsg);
+        std::cerr.write(formattedMsg.data(), formattedMsg.size());
     }
 
     void sinkFlush() override
@@ -51,5 +56,5 @@ protected:
 using StderrSinkMT = StderrSink<std::mutex>;
 using StderrSinkST = StderrSink<NullMutex>;
 
-}
-}
+} // namespace sinks
+} // namespace minispdlog

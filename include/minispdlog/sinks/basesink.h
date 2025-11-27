@@ -1,7 +1,9 @@
 #pragma once
 
 #include "../common.h"
-#include "../details/LogMsg.h"
+#include "../details/logmsg.h"
+#include "../formatter.h"
+#include "../patternformatter.h"
 #include <mutex>
 #include <memory>
 
@@ -22,6 +24,8 @@ public:
     virtual level getLevel() const = 0;
 
     virtual bool shouldLog(level msgLevel) const = 0;
+
+    virtual void setFormatter(std::unique_ptr<Formatter> formatter) = 0;
 };
 
 template<typename Mutex>
@@ -65,18 +69,30 @@ public:
         return logLevelEnabled(m_level, msgLevel);
     }
 
+    void setFormatter(std::unique_ptr<Formatter> formatter) override
+    {
+        std::lock_guard<Mutex> lock(m_mutex);
+        m_formatter = std::move(formatter);
+    }
+
 protected:
     virtual void sinkLog(const details::LogMsg& msg) = 0;
     virtual void sinkFlush() = 0;
 
+    void formatMessage(const details::LogMsg& msg, fmt::memory_buffer& dest)
+    {
+        m_formatter->format(msg, dest);
+    }
+
     mutable Mutex m_mutex;
     level m_level;
+    std::unique_ptr<Formatter> m_formatter;
 };
 
 struct NullMutex
 {
     void lock() {}
-    void unlock
+    void unlock() {}
 };
 
 }

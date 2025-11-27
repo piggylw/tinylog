@@ -2,6 +2,8 @@
 set(MINISPDLOG_SOURCES
     level.cpp
     details/utils.cpp
+    formatter.cpp
+    patternformatter.cpp
 )
 
 # 创建静态库

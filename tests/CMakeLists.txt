@@ -1,3 +1,3 @@
 # 测试1:日志级别测试
-add_executable(testlevel test_level.cpp)
-target_link_libraries(testlevel PRIVATE minispdlog)
+add_executable(test test.cpp)
+target_link_libraries(test PRIVATE minispdlog)
